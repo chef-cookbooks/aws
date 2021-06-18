@@ -8,7 +8,7 @@ property :ttl,                         Integer, default: 3600
 property :weight,                      String
 property :record_name,                 String
 property :set_identifier,              String
-property :geo_location,                String
+property :geo_location,                Hash
 property :geo_location_country,        String
 property :geo_location_continent,      String
 property :geo_location_subdivision,    String
@@ -114,12 +114,12 @@ action_class do
   end
 
   def geo_location
-    if geo_location_country
+    if geo_location_country && geo_location_subdivision
+      { country_code: geo_location_country, subdivision_code: geo_location_subdivision }
+    elsif geo_location_country
       { country_code: geo_location_country }
     elsif geo_location_continent
       { continent_code: geo_location_continent }
-    elsif geo_location_subdivision
-      { country_code: geo_location_country, subdivision_code: geo_location_subdivision }
     else
       @geo_location ||= new_resource.geo_location
     end
